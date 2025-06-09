@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <title>Future Town of You</title>
+  <style>
+    body {
+      background-color: white;
+      color: #003366;
+      font-family: sans-serif;
+      text-align: center;
+      padding: 30px;
+    }
+    h1 {
+      font-size: 2em;
+    }
+    .logo {
+      font-weight: bold;
+      font-size: 1.2em;
+      margin-bottom: 10px;
+    }
+    .checkboxes label {
+      display: block;
+      margin: 8px 0;
+    }
+    .image-container img {
+      max-width: 80%;
+      height: auto;
+      margin-top: 20px;
+      border: 2px solid #003366;
+      border-radius: 8px;
+    }
+    .selection-display {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="logo">🏙️ Future Town of You</div>
+  <h1>Φτιάξε την πόλη σου</h1>
+  <p>Επίλεξε αντικείμενα για να δεις πώς θα μοιάζει η μελλοντική σου πόλη.</p>
+
+  <div class="checkboxes">
+    <label><input type="checkbox" value="Παγκάκι"> Παγκάκι</label>
+    <label><input type="checkbox" value="Δέντρο"> Δέντρο</label>
+    <label><input type="checkbox" value="Άνθρωπος"> Άνθρωπος</label>
+    <label><input type="checkbox" value="Λατέρνα"> Λατέρνα</label>
+    <label><input type="checkbox" value="Καντίνα"> Καντίνα</label>
+  </div>
+
+  <button onclick="updateImage()">Δείξε την εικόνα</button>
+
+  <div id="message"></div>
+  <div class="image-container">
+    <img id="townImage" src="" alt="Η εικόνα θα εμφανιστεί εδώ" style="display:none;">
+  </div>
+  <div class="selection-display" id="selection"></div>
+
+  <script>
+    const rawImageData = {
+      "Παγκάκι+Δέντρο": "https://photos.app.goo.gl/i5TdX4hBttf6e6sf9",
+      "Παγκάκι+Άνθρωπος": "https://photos.app.goo.gl/TDAMeZnZUrg2JXah6",
+      "Παγκάκι+Λατέρνα": "https://photos.app.goo.gl/okLgKid9L8oLfPb7A",
+      "Παγκάκι+Καντίνα": "https://photos.app.goo.gl/Lsg5RrxvgxXffULHA",
+      "Δέντρο+Άνθρωπος": "https://photos.app.goo.gl/KjEH1PftK3K18YU88",
+      "Δέντρο+Λατέρνα": "https://photos.app.goo.gl/NnjdmqPNEF6E78xf6",
+      "Δέντρο+Καντίνα": "https://photos.app.goo.gl/k1tDaoygAFSfPgAC7",
+      "Άνθρωπος+Λατέρνα": "https://photos.app.goo.gl/NkjHPds7Pwe6WUeV8",
+      "Άνθρωπος+Καντίνα": "https://photos.app.goo.gl/1CikF3VHFvp9v6o4A",
+      "Λατέρνα+Καντίνα": "https://photos.app.goo.gl/1wQ88QwJvtAtz5ZD9",
+      "Παγκάκι+Δέντρο+Άνθρωπος": "https://photos.app.goo.gl/zmurxrPeLVX9mL376",
+      "Παγκάκι+Δέντρο+Λατέρνα": "https://photos.app.goo.gl/t2eChAAgy46j4Xur5",
+      "Παγκάκι+Δέντρο+Καντίνα": "https://photos.app.goo.gl/MmMxvQdD2rTNVNJt7",
+      "Παγκάκι+Άνθρωπος+Λατέρνα": "https://photos.app.goo.gl/hMVUNDaYm6bR6auFA",
+      "Παγκάκι+Άνθρωπος+Καντίνα": "https://photos.app.goo.gl/3tzvzZfvBmLBdRscA",
+      "Παγκάκι+Λατέρνα+Καντίνα": "https://photos.app.goo.gl/M5khTSk8pnnu9wYw7",
+      "Δέντρο+Άνθρωπος+Λατέρνα": "https://photos.app.goo.gl/cf5kh2ThQLuEx4CH8",
+      "Δέντρο+Άνθρωπος+Καντίνα": "https://photos.app.goo.gl/JGkLV1Tsr7NaFbim6",
+      "Δέντρο+Λατέρνα+Καντίνα": "https://photos.app.goo.gl/3ZDuFGyxrB3TTqzw7",
+      "Άνθρωπος+Λατέρνα+Καντίνα": "https://photos.app.goo.gl/2XDPnj3Gpx6ahWam9",
+      "Παγκάκι+Δέντρο+Άνθρωπος+Λατέρνα": "https://photos.app.goo.gl/UrVFzpAAEzsrijLy8",
+      "Παγκάκι+Δέντρο+Άνθρωπος+Καντίνα": "https://photos.app.goo.gl/onuLKnjtPeEhBEf49",
+      "Παγκάκι+Δέντρο+Λατέρνα+Καντίνα": "https://photos.app.goo.gl/cTNueNFfyvHC6c6H6",
+      "Παγκάκι+Άνθρωπος+Λατέρνα+Καντίνα": "https://photos.app.goo.gl/PJjDmUuzJK5nT42V8",
+      "Δέντρο+Άνθρωπος+Λατέρνα+Καντίνα": "https://photos.app.goo.gl/Fmc4ZmBQKcDNF3o47",
+      "Παγκάκι+Δέντρο+Άνθρωπος+Λατέρνα+Καντίνα": "https://photos.app.goo.gl/Gp2dNhEiCMJVTB1W8",
+      "Παγκάκι": "https://photos.app.goo.gl/RePmRxGRWMUxaRnX6",
+      "Δέντρο": "https://photos.app.goo.gl/EempTZYdVPj6JsaN7",
+      "Άνθρωπος": "https://photos.app.goo.gl/TaAkGHRoKo8vZzRKA",
+      "Λατέρνα": "https://photos.app.goo.gl/KxY6J5eBMXtvr2c87",
+      "Καντίνα": "https://photos.app.goo.gl/NoQnaHoNXSN3sjgv8"
+    };
+
+    const images = {};
+    for (const key in rawImageData) {
+      const sortedKey = key.split('+').sort().join('+');
+      images[sortedKey] = rawImageData[key];
+    }
+
+    function updateImage() {
+      const checkboxes = document.querySelectorAll("input[type='checkbox']:checked");
+      const selected = Array.from(checkboxes).map(cb => cb.value).sort();
+      const key = selected.join('+');
+
+      const imageEl = document.getElementById("townImage");
+      const message = document.getElementById("message");
+      const selectionText = document.getElementById("selection");
+
+      if (selected.length === 0) {
+        imageEl.style.display = "none";
+        selectionText.innerText = "";
+        message.innerText = "Δεν χτίζεται μία πόλη χωρίς επιλογές.";
+        setTimeout(() => { message.innerText = ""; }, 2000);
+        return;
+      }
+
+      const url = images[key];
+      if (url) {
+        imageEl.src = url;
+        imageEl.style.display = "block";
+        selectionText.innerText = "Επέλεξες: " + selected.join(', ');
+        message.innerText = "";
+      } else {
+        imageEl.style.display = "none";
+        selectionText.innerText = "";
+        message.innerText = "Δεν υπάρχει εικόνα για αυτόν τον συνδυασμό.";
+      }
+    }
+  </script>
+</body>
+</html>
