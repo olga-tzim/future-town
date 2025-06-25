@@ -2,7 +2,7 @@
 <html lang="el">
 <head>
   <meta charset="UTF-8">
-  <title>Μελλοντική Πόλη</title>
+  <title>Επιλογή Αντικειμένων</title>
   <style>
     body {
       background-color: black;
@@ -11,29 +11,61 @@
       text-align: center;
       padding: 20px;
     }
-    img {
-      max-width: 600px;
-      margin-top: 20px;
-      border: 2px solid white;
-    }
     select {
+      margin: 10px;
       padding: 10px;
-      margin: 5px;
       font-size: 16px;
+    }
+    img {
+      margin-top: 20px;
+      max-width: 80%;
     }
     #logo {
       width: 200px;
-      margin-bottom: 20px;
+      margin-bottom: 30px;
     }
   </style>
 </head>
 <body>
-  <img src="logo.png" id="logo" alt="Λογότυπο">
-  <h1>Κατασκευή Σύνθετης Εικόνας</h1>
+  <img id="logo" src="images/logo.png" alt="Λογότυπο">
+  <h1>Επιλογή Αντικειμένων</h1>
+  <p>Επέλεξε έως 5 αντικείμενα για να δεις την αντίστοιχη εικόνα.</p>
 
   <div>
-    <label>Επιλογή στοιχείων:</label><br>
-    <select multiple id="elements">
+    <select id="select1">
+      <option value="">-</option>
+      <option value="bench">Παγκάκι</option>
+      <option value="tree">Δέντρο</option>
+      <option value="person">Άνθρωπος</option>
+      <option value="laterna">Λατέρνα</option>
+      <option value="kadina">Καντίνα</option>
+    </select>
+    <select id="select2">
+      <option value="">-</option>
+      <option value="bench">Παγκάκι</option>
+      <option value="tree">Δέντρο</option>
+      <option value="person">Άνθρωπος</option>
+      <option value="laterna">Λατέρνα</option>
+      <option value="kadina">Καντίνα</option>
+    </select>
+    <select id="select3">
+      <option value="">-</option>
+      <option value="bench">Παγκάκι</option>
+      <option value="tree">Δέντρο</option>
+      <option value="person">Άνθρωπος</option>
+      <option value="laterna">Λατέρνα</option>
+      <option value="kadina">Καντίνα</option>
+    </select>
+    <select id="select4">
+      <option value="">-</option>
+      <option value="bench">Παγκάκι</option>
+      <option value="tree">Δέντρο</option>
+      <option value="person">Άνθρωπος</option>
+      <option value="laterna">Λατέρνα</option>
+      <option value="kadina">Καντίνα</option>
+    </select>
+    <select id="select5">
+      <option value="">-</option>
       <option value="bench">Παγκάκι</option>
       <option value="tree">Δέντρο</option>
       <option value="person">Άνθρωπος</option>
@@ -42,33 +74,35 @@
     </select>
   </div>
 
-  <button onclick="showImage()">Δες την Εικόνα</button>
-  <br>
-  <img id="resultImage" src="" alt="Σύνθετη εικόνα" style="display:none">
-  <p id="errorMsg" style="color:red"></p>
+  <button onclick="showImage()">Προβολή</button>
+
+  <div>
+    <p id="error" style="color: red;"></p>
+    <img id="output" src="" alt="">
+  </div>
 
   <script>
     function showImage() {
-      const selected = Array.from(document.getElementById("elements").selectedOptions).map(o => o.value);
-      const error = document.getElementById("errorMsg");
-      const img = document.getElementById("resultImage");
-      error.textContent = "";
-
-      if (selected.length === 0) {
-        img.style.display = "none";
-        error.textContent = "Επίλεξε τουλάχιστον ένα στοιχείο.";
-        return;
+      const selections = [];
+      for (let i = 1; i <= 5; i++) {
+        const val = document.getElementById('select' + i).value;
+        if (val) selections.push(val);
       }
+      if (selections.length === 0) return;
 
-      const filename = selected.join("_") + ".png";
-      const imagePath = "images/" + filename;
-      img.src = imagePath;
+      selections.sort();
+      const filename = selections.join("_") + ".png";
+      const imgPath = "images/" + filename;
+
+      const img = document.getElementById("output");
+      const error = document.getElementById("error");
+      img.src = imgPath;
       img.onerror = () => {
-        img.style.display = "none";
-        error.textContent = `Η εικόνα \"${filename}\" δεν βρέθηκε.`;
+        error.textContent = "Η εικόνα δεν βρέθηκε: " + filename;
+        img.src = "";
       };
       img.onload = () => {
-        img.style.display = "block";
+        error.textContent = "";
       };
     }
   </script>
