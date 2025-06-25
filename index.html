@@ -2,107 +2,74 @@
 <html lang="el">
 <head>
   <meta charset="UTF-8">
-  <title>Future Town</title>
+  <title>Μελλοντική Πόλη</title>
   <style>
     body {
-      background-color: #000;
-      color: #f0f0f0;
-      font-family: "Georgia", serif;
+      background-color: black;
+      color: white;
+      font-family: Georgia, serif;
       text-align: center;
-      padding: 30px;
+      padding: 20px;
     }
-    .logo {
-      font-size: 1.6em;
-      font-weight: bold;
-      margin-bottom: 20px;
-    }
-    h1 {
-      font-size: 2em;
-      margin-bottom: 10px;
-    }
-    .checkboxes label {
-      display: block;
-      margin: 8px 0;
-      font-size: 1.1em;
-    }
-    .image-container img {
-      max-width: 85%;
-      height: auto;
+    img {
+      max-width: 600px;
       margin-top: 20px;
-      border: 3px solid #f0f0f0;
-      border-radius: 12px;
+      border: 2px solid white;
     }
-    .selection-display {
-      margin-top: 15px;
-      font-weight: bold;
+    select {
+      padding: 10px;
+      margin: 5px;
+      font-size: 16px;
     }
-    button {
-      margin-top: 15px;
-      padding: 10px 20px;
-      font-size: 1em;
-      cursor: pointer;
+    #logo {
+      width: 200px;
+      margin-bottom: 20px;
     }
   </style>
 </head>
 <body>
-  <div class="logo">🏛️ Future Town</div>
-  <h1>Φτιάξε την πόλη σου</h1>
-  <p>Επίλεξε στοιχεία για να εμφανιστεί η εικόνα της πόλης σου.</p>
+  <img src="logo.png" id="logo" alt="Λογότυπο">
+  <h1>Κατασκευή Σύνθετης Εικόνας</h1>
 
-  <div class="checkboxes">
-    <label><input type="checkbox" value="Παγκάκι"> Παγκάκι</label>
-    <label><input type="checkbox" value="Δέντρο"> Δέντρο</label>
-    <label><input type="checkbox" value="Άνθρωπος"> Άνθρωπος</label>
-    <label><input type="checkbox" value="Λατέρνα"> Λατέρνα</label>
-    <label><input type="checkbox" value="Καντίνα"> Καντίνα</label>
+  <div>
+    <label>Επιλογή στοιχείων:</label><br>
+    <select multiple id="elements">
+      <option value="bench">Παγκάκι</option>
+      <option value="tree">Δέντρο</option>
+      <option value="person">Άνθρωπος</option>
+      <option value="laterna">Λατέρνα</option>
+      <option value="kadina">Καντίνα</option>
+    </select>
   </div>
 
-  <button onclick="updateImage()">Δείξε την εικόνα</button>
-
-  <div id="message"></div>
-  <div class="image-container">
-    <img id="townImage" src="" alt="Η εικόνα θα εμφανιστεί εδώ" style="display:none;">
-  </div>
-  <div class="selection-display" id="selection"></div>
+  <button onclick="showImage()">Δες την Εικόνα</button>
+  <br>
+  <img id="resultImage" src="" alt="Σύνθετη εικόνα" style="display:none">
+  <p id="errorMsg" style="color:red"></p>
 
   <script>
-    const baseURL = "https://olga-tzim.github.io/future-town/"; // άλλαξε το αν έχεις άλλο repo
-
-    const filenameMap = {
-      "Παγκάκι": "bench.png",
-      "Δέντρο": "tree.png",
-      "Άνθρωπος": "person.png",
-      "Λατέρνα": "lanterna.png",
-      "Καντίνα": "kadina.png"
-    };
-
-    function updateImage() {
-      const checkboxes = document.querySelectorAll("input[type='checkbox']:checked");
-      const selected = Array.from(checkboxes).map(cb => cb.value).sort();
-      const key = selected.join('+');
-
-      const selectionText = document.getElementById("selection");
-      const message = document.getElementById("message");
-      const imageEl = document.getElementById("townImage");
+    function showImage() {
+      const selected = Array.from(document.getElementById("elements").selectedOptions).map(o => o.value);
+      const error = document.getElementById("errorMsg");
+      const img = document.getElementById("resultImage");
+      error.textContent = "";
 
       if (selected.length === 0) {
-        imageEl.style.display = "none";
-        selectionText.innerText = "";
-        message.innerText = "Δεν επιλέχθηκε τίποτα.";
+        img.style.display = "none";
+        error.textContent = "Επίλεξε τουλάχιστον ένα στοιχείο.";
         return;
       }
 
-      // φτιάχνει το filename με βάση το key
-      const filename = selected.map(label => {
-        return filenameMap[label];
-      }).join('_').replace('.png', '') + ".png";
-
-      const imageURL = baseURL + filename;
-
-      imageEl.src = imageURL;
-      imageEl.style.display = "block";
-      selectionText.innerText = "Επέλεξες: " + selected.join(', ');
-      message.innerText = "";
+      const filename = selected.join("_") + ".png";
+      const imagePath = "images/" + filename;
+      img.src = imagePath;
+      img.onerror = () => {
+        img.style.display = "none";
+        error.textContent = `Η εικόνα \"${filename}\" δεν βρέθηκε.`;
+      };
+      img.onload = () => {
+        img.style.display = "block";
+      };
     }
   </script>
 </body>
